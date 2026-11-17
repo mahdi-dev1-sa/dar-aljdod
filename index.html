@@ -47,7 +47,7 @@ section{position:relative}
 .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;pointer-events:none}
 .nav>*{pointer-events:auto}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:28px;line-height:1}
-.brand svg{width:38px;height:38px;flex:none}
+.brand img{width:52px;height:52px;flex:none;display:block}
 .pill{display:flex;gap:4px;padding:5px;border-radius:99px;border:1.5px solid rgba(250,246,240,.5);background:rgba(43,33,30,.5);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .pill a{text-decoration:none;font-weight:700;font-size:15px;padding:8px 18px;border-radius:99px;transition:background .5s var(--ease),color .5s var(--ease)}
 .pill a:hover:not(.on){background:rgba(250,246,240,.16)}
@@ -55,9 +55,6 @@ section{position:relative}
 .nav-cta{font-weight:800;font-size:15px;padding:10px 22px;border-radius:99px;background:var(--cream);color:var(--ink);text-decoration:none;transition:transform .2s,background .3s,color .3s}
 .nav-cta:hover{transform:scale(1.05);background:var(--brick-dark);color:var(--cream)}
 .nav.onlight .brand{color:var(--ink)}
-.nav.onlight .brand svg circle{fill:var(--ink)}
-.nav.onlight .brand svg path{fill:var(--cream)}
-.nav.onlight .brand svg circle+path+circle{fill:var(--brick)}
 .nav.onlight .nav-cta{background:var(--ink);color:var(--cream)}
 .nav.onlight .nav-cta:hover{background:var(--brick-dark)}
 
@@ -153,7 +150,7 @@ footer{background:#1F1714;padding:26px 40px 90px;text-align:center;font-size:14p
 @media (max-width:820px){
   body{font-size:16px}
   .nav{padding:12px 16px}
-  .brand{font-size:24px}.brand svg{width:32px;height:32px}
+  .brand{font-size:24px}.brand img{width:42px;height:42px}
   .nav-cta{padding:8px 16px}
   .pill{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(43,33,30,.72);gap:2px;max-width:calc(100vw - 20px)}
   .pill a{padding:8px 11px;font-size:14px;white-space:nowrap}
@@ -184,7 +181,7 @@ footer{background:#1F1714;padding:26px 40px 90px;text-align:center;font-size:14p
 
 <header class="nav">
   <a class="brand" href="#home" aria-label="دار الجدود، الصفحة الرئيسية">
-    <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#FAF6F0"/><path d="M9 31V19a11 11 0 0 1 22 0v12h-5v-11a6 6 0 0 0-12 0v11z" fill="#2B211E"/><circle cx="20" cy="30" r="2.6" fill="#9E2A2B"/></svg>
+    <img src="logo.svg" alt="" width="52" height="52">
     <span>دار الجدود</span>
   </a>
   <nav class="pill" aria-label="أقسام الصفحة">
