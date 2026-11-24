@@ -11,8 +11,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="bar"></div>
 
-  <header class="header" id="top">
+  <header class="header">
     <div class="container nav">
       <a href="#top" class="logo">دار الجدود</a>
       <button class="burger" id="burger" aria-label="القائمة">☰</button>
@@ -26,87 +27,136 @@
     </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-sub">أهلًا بكم في</p>
-      <h1>دار الجدود</h1>
-      <p class="hero-text">نكهة الأجداد على مائدتكم، أطباق تقليدية محضّرة بحب وبالطريقة الأصيلة.</p>
-      <div class="hero-btns">
-        <a href="#menu-section" class="btn">اكتشف قائمتنا</a>
-        <a href="#reserve" class="btn btn-outline">احجز طاولتك</a>
+  <!-- المشهد 1: الواجهة -->
+  <section class="scene hero-scene" id="top" data-scene>
+    <div class="stick">
+      <div class="glow"></div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-sub reveal">أهلًا بكم في</p>
+          <h1 class="kinetic" id="kinetic" aria-label="دار الجدود"><span class="w"><span>دار</span></span> <span class="w"><span>الجدود</span></span></h1>
+          <p class="hero-text reveal" style="--dl:.5s">نكهة الأجداد على مائدتكم، أطباق تقليدية محضّرة بحب وبالطريقة الأصيلة.</p>
+          <a href="#reserve" class="btn-line reveal" style="--dl:.7s">احجز طاولتك</a>
+        </div>
+        <figure class="dish">
+          <span class="plate"></span>
+          <img src="images/hero-dish.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">
+        </figure>
+      </div>
+      <div class="scroll-hint"><span>اسحب للأسفل</span><i></i></div>
+    </div>
+  </section>
+
+  <!-- المشهد 2: المكان (ضباب) -->
+  <section class="scene space-scene" data-scene>
+    <div class="stick">
+      <div class="space-bg"></div>
+      <div class="fog a"></div><div class="fog b"></div><div class="fog c"></div>
+      <div class="space-title">
+        <div>
+          <h2>مساحة دار الجدود</h2>
+          <p>مكان دافئ بنكهة البيت القديم</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="about">
-    <div class="container about">
-      <div>
-        <h2 class="title">قصتنا</h2>
-        <p>منذ سنوات ونحن نحافظ على وصفات توارثناها جيلًا بعد جيل. نختار مكوّناتنا طازجة من الأسواق المحلية، ونطهو على نار هادئة كما كانت تفعل الجدّات، لتحصلوا على طعم لا يُنسى.</p>
-        <p>في أجواء دافئة بديكور تراثي، نستقبلكم كأنكم في بيتكم.</p>
-        <ul class="features">
-          <li>🌿 مكوّنات طبيعية وطازجة</li>
-          <li>🍲 وصفات عائلية أصيلة</li>
-          <li>🏺 ديكور تراثي دافئ</li>
-        </ul>
+  <!-- المشهد 3: القصة -->
+  <section class="scene story-scene" id="about" data-scene>
+    <div class="stick">
+      <div class="story-grid">
+        <div class="story-copy">
+          <p class="kicker rv" style="--d:0">اكتشف</p>
+          <h2 class="big rv" style="--d:.05">قصتنا</h2>
+          <p class="rv" style="--d:.12">منذ سنوات ونحن نحافظ على وصفات توارثناها جيلًا بعد جيل. نختار مكوّناتنا طازجة من الأسواق المحلية، ونطهو على نار هادئة كما كانت تفعل الجدّات، لتحصلوا على طعم لا يُنسى.</p>
+          <p class="rv" style="--d:.2">في أجواء دافئة بديكور تراثي، نستقبلكم كأنكم في بيتكم.</p>
+          <ul class="features rv" style="--d:.28">
+            <li>🌿 مكوّنات طبيعية وطازجة</li>
+            <li>🍲 وصفات عائلية أصيلة</li>
+            <li>🏺 ديكور تراثي دافئ</li>
+          </ul>
+          <a href="#reserve" class="btn-line rv" style="--d:.35">احجز طاولتك</a>
+        </div>
+        <div class="story-img"></div>
       </div>
-      <div class="about-img img-placeholder" role="img" aria-label="صورة المطعم">ضع صورة المطعم هنا</div>
+      <div class="infobar">
+        <div class="rv" style="--d:.5"><b>📍 العنوان</b><span>شارع الاستقلال، المدينة، الجزائر</span></div>
+        <div class="rv" style="--d:.56"><b>⏱ أوقات العمل</b><span>السبت – الخميس: 11:00 ص – 11:00 م</span></div>
+        <div class="rv" style="--d:.62"><b>📞 الحجز</b><span dir="ltr">+213 000 000 000</span></div>
+      </div>
     </div>
   </section>
 
-  <section class="section dark" id="menu-section">
+  <!-- قائمة الطعام -->
+  <section class="menu-sec" id="menu-section">
     <div class="container">
-      <h2 class="title light">قائمة الطعام</h2>
-      <div class="tabs" id="tabs">
+      <p class="kicker reveal">اكتشف</p>
+      <h2 class="big reveal" style="--dl:.1s">قائمتنا</h2>
+      <div class="tabs reveal" id="tabs" style="--dl:.2s">
         <button class="tab active" data-tab="mains">الأطباق الرئيسية</button>
         <button class="tab" data-tab="starters">المقبّلات والشوربات</button>
         <button class="tab" data-tab="desserts">الحلويات والمشروبات</button>
       </div>
 
-      <div class="menu-grid tab-panel active" id="mains">
-        <div class="item"><div><h3>كسكسي بالخضر واللحم</h3><p>سميد مفتول يدويًا، مرق غني وخضر موسمية</p></div><span class="price">1200 دج</span></div>
-        <div class="item"><div><h3>شخشوخة</h3><p>رقائق عجين مع مرق الدجاج والتوابل التقليدية</p></div><span class="price">1000 دج</span></div>
-        <div class="item"><div><h3>رشتة</h3><p>خيوط عجين رقيقة بمرق الدجاج والحمص واللفت</p></div><span class="price">900 دج</span></div>
-        <div class="item"><div><h3>طاجين الزيتون</h3><p>دجاج بالزيتون والمشمش بنكهة الزعفران</p></div><span class="price">1100 دج</span></div>
-        <div class="item"><div><h3>مثوم</h3><p>كفتة محشوّة بالثوم في صلصة حارّة خفيفة</p></div><span class="price">1000 دج</span></div>
-        <div class="item"><div><h3>مشوي مشكّل</h3><p>لحم وكبدة ونقانق على الفحم مع سلطة مشوية</p></div><span class="price">1500 دج</span></div>
-      </div>
+      <div class="menu-wrap">
+        <figure class="dish dish-menu reveal">
+          <span class="plate"></span>
+          <img src="images/menu-dish.png" alt="" onload="this.parentNode.classList.add('has-img')" onerror="this.remove()">
+        </figure>
 
-      <div class="menu-grid tab-panel" id="starters">
-        <div class="item"><div><h3>شوربة فريك</h3><p>قمح أخضر محمّص مع لحم الضأن والكزبرة</p></div><span class="price">400 دج</span></div>
-        <div class="item"><div><h3>حريرة</h3><p>شوربة الطماطم والعدس والحمص بالأعشاب</p></div><span class="price">350 دج</span></div>
-        <div class="item"><div><h3>بوراك</h3><p>رقائق مقرمشة محشوّة باللحم أو الجبن</p></div><span class="price">300 دج</span></div>
-        <div class="item"><div><h3>سلطة مشوية</h3><p>فلفل وطماطم مشويان بزيت الزيتون</p></div><span class="price">350 دج</span></div>
-      </div>
+        <div class="menu-lists">
+          <div class="menu-grid tab-panel active" id="mains">
+            <div class="item"><div><h3>كسكسي بالخضر واللحم</h3><p>سميد مفتول يدويًا، مرق غني وخضر موسمية</p></div><span class="price">1200 دج</span></div>
+            <div class="item"><div><h3>شخشوخة</h3><p>رقائق عجين مع مرق الدجاج والتوابل التقليدية</p></div><span class="price">1000 دج</span></div>
+            <div class="item"><div><h3>رشتة</h3><p>خيوط عجين رقيقة بمرق الدجاج والحمص واللفت</p></div><span class="price">900 دج</span></div>
+            <div class="item"><div><h3>طاجين الزيتون</h3><p>دجاج بالزيتون والمشمش بنكهة الزعفران</p></div><span class="price">1100 دج</span></div>
+            <div class="item"><div><h3>مثوم</h3><p>كفتة محشوّة بالثوم في صلصة حارّة خفيفة</p></div><span class="price">1000 دج</span></div>
+            <div class="item"><div><h3>مشوي مشكّل</h3><p>لحم وكبدة ونقانق على الفحم مع سلطة مشوية</p></div><span class="price">1500 دج</span></div>
+          </div>
 
-      <div class="menu-grid tab-panel" id="desserts">
-        <div class="item"><div><h3>قلب اللوز</h3><p>حلوى سميد باللوز والعسل</p></div><span class="price">250 دج</span></div>
-        <div class="item"><div><h3>مقروط</h3><p>سميد محشو بالتمر ومقلي بالعسل</p></div><span class="price">200 دج</span></div>
-        <div class="item"><div><h3>شاي بالنعناع</h3><p>شاي أخضر مع نعناع طازج</p></div><span class="price">150 دج</span></div>
-        <div class="item"><div><h3>قهوة تقليدية</h3><p>قهوة محمّصة بماء الزهر</p></div><span class="price">150 دج</span></div>
+          <div class="menu-grid tab-panel" id="starters">
+            <div class="item"><div><h3>شوربة فريك</h3><p>قمح أخضر محمّص مع لحم الضأن والكزبرة</p></div><span class="price">400 دج</span></div>
+            <div class="item"><div><h3>حريرة</h3><p>شوربة الطماطم والعدس والحمص بالأعشاب</p></div><span class="price">350 دج</span></div>
+            <div class="item"><div><h3>بوراك</h3><p>رقائق مقرمشة محشوّة باللحم أو الجبن</p></div><span class="price">300 دج</span></div>
+            <div class="item"><div><h3>سلطة مشوية</h3><p>فلفل وطماطم مشويان بزيت الزيتون</p></div><span class="price">350 دج</span></div>
+          </div>
+
+          <div class="menu-grid tab-panel" id="desserts">
+            <div class="item"><div><h3>قلب اللوز</h3><p>حلوى سميد باللوز والعسل</p></div><span class="price">250 دج</span></div>
+            <div class="item"><div><h3>مقروط</h3><p>سميد محشو بالتمر ومقلي بالعسل</p></div><span class="price">200 دج</span></div>
+            <div class="item"><div><h3>شاي بالنعناع</h3><p>شاي أخضر مع نعناع طازج</p></div><span class="price">150 دج</span></div>
+            <div class="item"><div><h3>قهوة تقليدية</h3><p>قهوة محمّصة بماء الزهر</p></div><span class="price">150 دج</span></div>
+          </div>
+        </div>
       </div>
       <p class="note">* الأسعار والأطباق أمثلة، عدّلها حسب قائمتك الحقيقية.</p>
     </div>
   </section>
 
-  <section class="section" id="gallery">
-    <div class="container">
-      <h2 class="title">معرض الصور</h2>
-      <div class="gallery">
-        <div class="img-placeholder">صورة 1</div>
-        <div class="img-placeholder">صورة 2</div>
-        <div class="img-placeholder">صورة 3</div>
-        <div class="img-placeholder">صورة 4</div>
-        <div class="img-placeholder">صورة 5</div>
-        <div class="img-placeholder">صورة 6</div>
+  <!-- معرض الصور: يتحرك أفقيًا مع السكرول -->
+  <section class="scene gallery-scene" id="gallery" data-scene>
+    <div class="stick g-stick">
+      <div class="container g-head">
+        <p class="kicker">لحظات من</p>
+        <h2 class="big">معرض الصور</h2>
+      </div>
+      <div class="g-track" id="track">
+        <div class="g-card" style="--img:url('images/g1.jpg')"><span>صورة 1</span></div>
+        <div class="g-card" style="--img:url('images/g2.jpg')"><span>صورة 2</span></div>
+        <div class="g-card" style="--img:url('images/g3.jpg')"><span>صورة 3</span></div>
+        <div class="g-card" style="--img:url('images/g4.jpg')"><span>صورة 4</span></div>
+        <div class="g-card" style="--img:url('images/g5.jpg')"><span>صورة 5</span></div>
+        <div class="g-card" style="--img:url('images/g6.jpg')"><span>صورة 6</span></div>
       </div>
     </div>
   </section>
 
-  <section class="section cream" id="reserve">
+  <!-- الحجز -->
+  <section class="reserve-sec" id="reserve">
     <div class="container narrow">
-      <h2 class="title">احجز طاولتك</h2>
-      <form id="reserveForm" class="form">
+      <p class="kicker reveal">احجز</p>
+      <h2 class="big reveal" style="--dl:.1s">طاولتك معنا</h2>
+      <form id="reserveForm" class="form reveal" style="--dl:.2s">
         <input type="text" name="name" placeholder="الاسم الكامل" required>
         <input type="tel" name="phone" placeholder="رقم الهاتف" required>
         <div class="row">
@@ -120,10 +170,11 @@
     </div>
   </section>
 
-  <section class="section" id="contact">
+  <!-- التواصل -->
+  <section class="contact-sec" id="contact">
     <div class="container contact">
-      <div>
-        <h2 class="title">تواصل معنا</h2>
+      <div class="reveal">
+        <h2 class="big small">تواصل معنا</h2>
         <p>📍 العنوان: شارع الاستقلال، المدينة، الجزائر</p>
         <p>📞 الهاتف: <a href="tel:+213000000000" dir="ltr">+213 000 000 000</a></p>
         <p>✉️ البريد: <a href="mailto:contact@example.com">contact@example.com</a></p>
@@ -131,7 +182,7 @@
         <p>من السبت إلى الخميس: 11:00 صباحًا – 11:00 مساءً</p>
         <p>الجمعة: 1:00 ظهرًا – 11:00 مساءً</p>
       </div>
-      <div class="map img-placeholder">ضع خريطة Google Maps هنا (iframe)</div>
+      <div class="map reveal" style="--dl:.15s">ضع خريطة Google Maps هنا (iframe)</div>
     </div>
   </section>
 
