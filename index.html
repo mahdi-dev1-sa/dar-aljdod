@@ -1,655 +1,144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#9E2A2B">
-<title>دار الجدود | مطبخ الجدّات الجزائرية</title>
-<meta name="description" content="دار الجدود: كسكس وشخشوخة ورشتة وحلويات الدار، تُطهى على نار هادئة. اطّلع على القائمة واحجز طاولتك.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Lalezar&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
-<style>
-:root{
-  --ink:#2B211E;
-  --cream:#FAF6F0;
-  --brick:#9E2A2B;
-  --brick-dark:#6A1B1C;
-  --honey:#c98a2b;
-  --flav:#6A1B1C;
-  --ease:cubic-bezier(.22,.8,.24,1);
-  --display:'Lalezar','Almarai',system-ui,sans-serif;
-  --body:'Almarai',system-ui,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--body);background:var(--ink);color:var(--cream);line-height:1.75;overflow-x:hidden;font-size:17px}
-button,input,select,textarea{font:inherit;color:inherit}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--cream);outline-offset:3px;border-radius:6px}
-.about :focus-visible{outline-color:var(--ink)}
-
-/* canvas: sits above section backgrounds, below text */
-#gl{position:fixed;left:0;top:0;width:100vw;z-index:1;pointer-events:none}
-section{position:relative}
-.stage{touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none}
-.stage.drag{cursor:grabbing}
-.nogl .stage{display:grid;place-items:center;font-size:clamp(120px,22vw,240px)}
-.nogl .stage::after{content:attr(data-emoji)}
-
-/* ---------- nav ---------- */
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;pointer-events:none}
-.nav>*{pointer-events:auto}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:28px;line-height:1}
-.brand img{width:64px;height:64px;flex:none;display:block;border-radius:50%;box-shadow:0 2px 12px rgba(0,0,0,.3)}
-.pill{display:flex;gap:4px;padding:5px;border-radius:99px;border:1.5px solid rgba(250,246,240,.5);background:rgba(43,33,30,.5);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.pill a{text-decoration:none;font-weight:700;font-size:15px;padding:8px 18px;border-radius:99px;transition:background .5s var(--ease),color .5s var(--ease)}
-.pill a:hover:not(.on){background:rgba(250,246,240,.16)}
-.pill a.on{background:var(--cream);color:var(--ink)}
-.nav-cta{font-weight:800;font-size:15px;padding:10px 22px;border-radius:99px;background:var(--cream);color:var(--ink);text-decoration:none;transition:transform .2s,background .3s,color .3s}
-.nav-cta:hover{transform:scale(1.05);background:var(--brick-dark);color:var(--cream)}
-.nav.onlight .brand{color:var(--ink)}
-.nav.onlight .nav-cta{background:var(--ink);color:var(--cream)}
-.nav.onlight .nav-cta:hover{background:var(--brick-dark)}
-
-/* ---------- hero ---------- */
-.hero{--t:clamp(56px,12vw,190px);--dish:clamp(120px,17vw,230px);min-height:100vh;min-height:100svh;background:var(--brick);overflow:hidden}
-.hero-dish{position:absolute;left:0;right:0;margin:0 auto;bottom:calc(50% + 4vh + var(--t)*.72);width:var(--dish);height:var(--dish);border-radius:50%;object-fit:cover;z-index:2;box-shadow:0 0 0 4px #F4C46C,0 14px 36px rgba(43,33,30,.45)}
-.hero.go .hero-dish{animation:fade .9s .35s var(--ease) both}
-.hero:not(.go) .hero-dish{opacity:0}
-.hero h1{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:8vh;
-  font-family:'Aref Ruqaa',var(--display);font-weight:700;font-size:clamp(56px,12vw,190px);line-height:1.35;white-space:nowrap;
-  color:#F4C46C;text-shadow:0 4px 28px rgba(106,27,28,.55)}
-.hero h1 .w{display:inline-block;overflow:hidden;padding:.12em .04em;vertical-align:top}
-.hero h1 .w>span{display:inline-block;transform:translateY(0)}
-.hero h1 .w:nth-child(2){position:relative;top:-.25em}
-.hero-foot{position:absolute;left:0;right:0;bottom:clamp(28px,6vh,60px);z-index:2;display:grid;justify-items:center;gap:18px;padding:0 20px;text-align:center}
-.hero-foot p{font-size:clamp(17px,2vw,22px);font-weight:700;max-width:30em;text-shadow:0 1px 14px rgba(106,27,28,.7)}
-.btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 28px;border-radius:99px;font-weight:800;font-size:17px;text-decoration:none;border:1.5px solid var(--cream);cursor:pointer;background:transparent;transition:transform .2s,background .2s,color .2s}
-.btn:hover{transform:translateY(-2px)}
-.btn.solid{background:var(--cream);color:var(--ink)}
-.btn.solid:hover{background:var(--brick-dark);border-color:var(--brick-dark);color:var(--cream)}
-.btn.line:hover{background:rgba(250,246,240,.14)}
-.hero.go h1 .w>span{animation:rise 1s var(--ease) both}
-.hero.go h1 .w:nth-child(2)>span{animation-delay:.12s}
-.hero.go .hero-foot{animation:fade .9s .7s var(--ease) both}
-@keyframes rise{from{transform:translateY(105%)}to{transform:none}}
-@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.hero:not(.go) h1 .w>span{transform:translateY(105%)}
-.hero:not(.go) .hero-foot{opacity:0}
-
-/* ---------- menu ---------- */
-.menu{background:var(--flav);min-height:100vh;min-height:100svh;padding:120px 40px 96px;overflow:hidden}
-.reveal{position:absolute;inset:0;clip-path:circle(0 at 50% 50%);pointer-events:none}
-.menu-head{position:relative;z-index:2;text-align:center;display:grid;justify-items:center;gap:22px}
-.menu-head h2,.about h2,.book h2{font-family:var(--display);font-weight:400;font-size:clamp(46px,6.4vw,92px);line-height:1.05}
-.tabs{display:inline-flex;gap:4px;padding:5px;border-radius:99px;border:1.5px solid rgba(250,246,240,.6);background:rgba(255,255,255,.08);max-width:100%}
-.tab{border:0;background:none;cursor:pointer;font-weight:800;font-size:17px;padding:10px 24px;border-radius:99px;white-space:nowrap;transition:background .35s var(--ease),color .35s var(--ease)}
-.tab[aria-selected=true]{background:var(--cream);color:var(--ink)}
-.menu-body{position:relative;z-index:2;display:grid;grid-template-columns:1fr minmax(300px,32vw) 1fr;gap:36px;align-items:center;max-width:1320px;margin:20px auto 0}
-.menu-stage{height:clamp(320px,54vh,560px)}
-.dishes{display:grid;gap:34px;align-content:center}
-.dish{display:grid;grid-template-columns:auto 1fr auto;column-gap:12px;align-items:baseline}
-.dish h3{font-family:var(--display);font-weight:400;font-size:clamp(26px,2.5vw,36px);line-height:1.25}
-.dish .lead{align-self:end;margin-bottom:.5em;border-bottom:2px dotted rgba(250,246,240,.55)}
-.dish .price{font-weight:800;font-size:19px;white-space:nowrap}
-.dish p{grid-column:1/-1;font-size:16px;opacity:.92;max-width:26em}
-.note{position:relative;z-index:2;text-align:center;margin-top:30px;font-size:15px;opacity:.85}
-
-/* ---------- divider + about ---------- */
-.band{height:30px;background-color:var(--cream);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30' viewBox='0 0 60 30'%3E%3Cpath d='M30 2 L48 15 L30 28 L12 15Z' fill='none' stroke='%239E2A2B' stroke-width='3'/%3E%3Cpath d='M30 10 L38 15 L30 20 L22 15Z' fill='%23c98a2b'/%3E%3Cpath d='M0 15 L6 15 M54 15 L60 15' stroke='%239E2A2B' stroke-width='3'/%3E%3C/svg%3E");background-size:60px 30px;background-repeat:repeat-x;background-position:center}
-.about{background:var(--cream);color:var(--ink);padding:110px 40px}
-.about-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:start}
-.about h2{color:var(--brick-dark);max-width:9em}
-.about p{font-size:19px;max-width:32em}
-.about p+p{margin-top:1em}
-.facts{list-style:none;display:grid;gap:0;margin-top:6px}
-.facts li{padding:22px 0;border-top:2px solid rgba(43,33,30,.18);display:grid;gap:2px}
-.facts li:last-child{border-bottom:2px solid rgba(43,33,30,.18)}
-.facts b{font-family:var(--display);font-weight:400;font-size:30px;color:var(--brick);line-height:1.3}
-.facts span{font-size:17px}
-
-/* ---------- hours + booking ---------- */
-.book{background:#2B211E;padding:110px 40px 70px}
-.book-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:start}
-.book h2{margin-bottom:20px}
-.status{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:17px;padding:8px 18px;border-radius:99px;background:rgba(250,246,240,.1);margin-bottom:26px}
-.status i{width:11px;height:11px;border-radius:50%;background:#8fa8a3;flex:none}
-.status.open i{background:#7fd08a;box-shadow:0 0 0 4px rgba(127,208,138,.25)}
-.status.closed i{background:#e8826b}
-.hours{width:100%;border-collapse:collapse}
-.hours th,.hours td{padding:16px 0;border-top:1.5px solid rgba(250,246,240,.22);text-align:start;font-size:19px}
-.hours tr:last-child th,.hours tr:last-child td{border-bottom:1.5px solid rgba(250,246,240,.22)}
-.hours td{font-weight:800;text-align:end;font-variant-numeric:tabular-nums}
-.hours tr.today th,.hours tr.today td{color:#f4c46c}
-.form-card{background:rgba(250,246,240,.07);border:1.5px solid rgba(250,246,240,.25);border-radius:26px;padding:34px}
-.form-card h3{font-family:var(--display);font-weight:400;font-size:38px;line-height:1.2}
-.form-card .hint{opacity:.85;font-size:15px;margin:6px 0 24px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.field{display:grid;gap:6px;margin-bottom:14px;align-content:start}
-.field label{font-weight:800;font-size:15px}
-.field input,.field select,.field textarea{width:100%;min-height:50px;padding:11px 14px;border-radius:14px;border:1.5px solid rgba(250,246,240,.4);background:rgba(43,33,30,.6);color-scheme:dark}
-.field textarea{min-height:84px;resize:vertical}
-.field select option{background:#3A2D29;color:var(--cream)}
-.field input::placeholder,.field textarea::placeholder{color:rgba(250,246,240,.5)}
-.field [aria-invalid=true]{border-color:#ff9b85}
-.err{color:#ffb4a2;font-size:14px;min-height:1.3em;font-weight:700}
-.form-card .btn{width:100%;margin-top:6px;min-height:56px;font-size:18px}
-.done{text-align:center;display:grid;gap:14px;justify-items:center;padding:12px 0}
-.done h3{font-size:44px}
-.done dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;text-align:start;padding:18px 24px;border-radius:18px;background:rgba(43,33,30,.55);width:100%;max-width:380px}
-.done dt{opacity:.75}.done dd{font-weight:800}
-.done .demo{font-size:15px;opacity:.85;max-width:26em}
-[hidden]{display:none!important}
-footer{background:#1F1714;padding:26px 40px 90px;text-align:center;font-size:14px;opacity:.9}
-
-/* ---------- phone ---------- */
-@media (max-width:820px){
-  body{font-size:16px}
-  .nav{padding:12px 16px}
-  .brand{font-size:24px}.brand img{width:50px;height:50px}
-  .nav-cta{padding:8px 16px}
-  .pill{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(43,33,30,.72);gap:2px;max-width:calc(100vw - 20px)}
-  .pill a{padding:8px 11px;font-size:14px;white-space:nowrap}
-  .hero{--t:clamp(48px,15vw,100px);--dish:clamp(110px,34vw,170px)}
-  .hero h1{padding-bottom:4vh;font-size:clamp(48px,15vw,100px)}
-  .hero-foot{bottom:84px}
-  .menu{padding:92px 16px 110px}
-  .tabs{overflow-x:auto;scrollbar-width:none;gap:0}
-  .tab{padding:9px 11px;font-size:14px}
-  .menu-body{grid-template-columns:1fr;gap:6px}
-  .menu-stage{order:-1;height:min(46vh,340px)}
-  .dishes{gap:24px}
-  .about{padding:72px 20px}
-  .about-in,.book-in{grid-template-columns:1fr;gap:40px}
-  .book{padding:72px 20px 40px}
-  .form-card{padding:22px}
-  .grid2{grid-template-columns:1fr;gap:0}
-}
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .hero:not(.go) h1 .w>span{transform:none}
-  .hero:not(.go) .hero-foot{opacity:1}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مطعم الأصالة | أطباق تقليدية بنكهة الأجداد</title>
+  <meta name="description" content="مطعم الأصالة: كسكسي، شخشوخة، رشتة وأطباق تقليدية محضّرة بالطريقة الأصيلة.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="gl" aria-hidden="true"></canvas>
 
-<header class="nav">
-  <a class="brand" href="#home" aria-label="دار الجدود، الصفحة الرئيسية">
-    <img src="data:image/webp;base64,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" alt="شعار دار الجدود" width="64" height="64">
-    <span>دار الجدود</span>
-  </a>
-  <nav class="pill" aria-label="أقسام الصفحة">
-    <a href="#home" data-s="home">الرئيسية</a>
-    <a href="#menu" data-s="menu">القائمة</a>
-    <a href="#about" data-s="about">عن المطعم</a>
-    <a href="#book" data-s="book">الحجز</a>
-  </nav>
-  <a class="nav-cta" href="#book">احجز طاولة</a>
-</header>
-
-<main>
-<section class="hero" id="home">
-  <img class="hero-dish" src="data:image/webp;base64,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" alt="صحن كسكس بلحم الغنم والخضار" width="230" height="230">
-  <h1 aria-label="دار الجدود"><span class="w"><span>دار</span></span> <span class="w"><span>الجدود</span></span></h1>
-  <div class="hero-foot">
-    <p>مطبخ الجدّات الجزائرية، يُطهى على نار هادئة ويُقدَّم كما في الدار.</p>
-    <div class="btns">
-      <a class="btn solid" href="#menu">شاهد القائمة</a>
-      <a class="btn line" href="#book">احجز طاولة</a>
+  <header class="header" id="top">
+    <div class="container nav">
+      <a href="#top" class="logo">الأصالة</a>
+      <button class="burger" id="burger" aria-label="القائمة">☰</button>
+      <nav id="menu">
+        <a href="#about">من نحن</a>
+        <a href="#menu-section">قائمة الطعام</a>
+        <a href="#gallery">معرض الصور</a>
+        <a href="#reserve">الحجز</a>
+        <a href="#contact">اتصل بنا</a>
+      </nav>
     </div>
-  </div>
-</section>
+  </header>
 
-<section class="menu" id="menu" aria-labelledby="menuTitle">
-  <div class="reveal" id="reveal" aria-hidden="true"></div>
-  <div class="menu-head">
-    <h2 id="menuTitle">قائمة الدار</h2>
-    <div class="tabs" role="tablist" aria-label="أنواع الأطباق" id="tabs"></div>
-  </div>
-  <div class="menu-body" id="menuBody" role="tabpanel">
-    <div class="dishes" id="listA"></div>
-    <div class="stage menu-stage" id="menuStage" data-emoji="🍲" aria-hidden="true"></div>
-    <div class="dishes" id="listB"></div>
-  </div>
-  <p class="note">اسحب الطبق بإصبعك أو بالفأرة لتديره. الأسعار بالدينار الجزائري.</p>
-</section>
-
-<div class="band" aria-hidden="true"></div>
-
-<section class="about" id="about" aria-labelledby="aboutTitle">
-  <div class="about-in">
-    <div>
-      <h2 id="aboutTitle">على نار هادئة، كما كانت الجدّة تفعل</h2>
-      <p style="margin-top:28px">بدأت الحكاية في مطبخ بيت قديم، حيث كان الكسكس يُفتل باليد صباح كل جمعة ويجتمع الجميع حول صحن واحد.</p>
-      <p>في دار الجدود نحافظ على هذه الطريقة: مكوّنات بسيطة، وقت كافٍ للطبخ، وطاولة تتّسع لمن يصل متأخراً.</p>
-    </div>
-    <ul class="facts">
-      <li><b>خبز الدار</b><span>يُعجن ويُخبز كل صباح قبل أن نفتح الأبواب.</span></li>
-      <li><b>كسكس يُفتل باليد</b><span>لا سميد جاهز ولا اختصارات في المرق.</span></li>
-      <li><b>توابل مطحونة عندنا</b><span>الكمون والقرفة والكزبرة تُطحن طازجة كل أسبوع.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="book" id="book" aria-labelledby="bookTitle">
-  <div class="book-in">
-    <div>
-      <h2 id="bookTitle">أوقات العمل</h2>
-      <div class="status" id="status" role="status"><i></i><span>جارٍ التحقق...</span></div>
-      <table class="hours">
-        <tbody>
-          <tr data-days="6,0,1,2,3,4"><th scope="row">السبت إلى الخميس</th><td>من <bdi>11:00</bdi> إلى <bdi>23:00</bdi></td></tr>
-          <tr data-days="5"><th scope="row">الجمعة</th><td>من <bdi>14:00</bdi> إلى <bdi>23:00</bdi></td></tr>
-        </tbody>
-      </table>
-      <p style="margin-top:22px;opacity:.85;font-size:16px">آخر حجز قبل الإغلاق بساعة. المطبخ يعمل حتى الإغلاق.</p>
-    </div>
-
-    <div class="form-card">
-      <form id="bookForm" novalidate>
-        <h3>احجز طاولتك</h3>
-        <p class="hint">نموذج تجريبي: لا يُرسل أي بيانات ولا يُحفظ شيء.</p>
-        <div class="grid2">
-          <div class="field"><label for="fName">الاسم</label><input id="fName" name="name" autocomplete="name" placeholder="مثال: أحمد بن علي"><div class="err" id="eName"></div></div>
-          <div class="field"><label for="fPhone">رقم الهاتف</label><input id="fPhone" name="phone" inputmode="tel" autocomplete="tel" placeholder="0550 12 34 56" dir="ltr" style="text-align:right"><div class="err" id="ePhone"></div></div>
-          <div class="field"><label for="fDate">التاريخ</label><input id="fDate" name="date" type="date"><div class="err" id="eDate"></div></div>
-          <div class="field"><label for="fTime">الوقت</label><select id="fTime" name="time" disabled><option value="">اختر التاريخ أولاً</option></select><div class="err" id="eTime"></div></div>
-          <div class="field"><label for="fGuests">عدد الأشخاص</label><select id="fGuests" name="guests"></select><div class="err"></div></div>
-          <div class="field"><label for="fNotes">ملاحظات (اختياري)</label><textarea id="fNotes" name="notes" rows="2" placeholder="مناسبة خاصة، كرسي أطفال..."></textarea><div class="err"></div></div>
-        </div>
-        <button class="btn solid" type="submit">تأكيد الحجز</button>
-      </form>
-      <div class="done" id="done" hidden tabindex="-1">
-        <h3>تم تسجيل حجزك</h3>
-        <dl id="sum"></dl>
-        <p class="demo">هذا عرض تجريبي فقط. لم يُرسل أي شيء إلى أي جهة.</p>
-        <button class="btn line" type="button" id="again">حجز جديد</button>
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-sub">أهلًا بكم في</p>
+      <h1>مطعم الأصالة</h1>
+      <p class="hero-text">نكهة الأجداد على مائدتكم، أطباق تقليدية محضّرة بحب وبالطريقة الأصيلة.</p>
+      <div class="hero-btns">
+        <a href="#menu-section" class="btn">اكتشف قائمتنا</a>
+        <a href="#reserve" class="btn btn-outline">احجز طاولتك</a>
       </div>
     </div>
-  </div>
-</section>
-</main>
-<footer>دار الجدود: مطعم افتراضي، نموذج تصميم لعميل. الأسماء والأسعار للتجربة فقط.</footer>
+  </section>
 
-<script>
-/* ============ data ============ */
-const MENU=[
- {id:'soup',label:'شوربات',color:'#6A1B1C',emoji:'🍲',dishes:[
-  ['شربة فريك','فريك أخضر مع لحم الغنم والكزبرة، تُقدَّم ساخنة مع الليمون.',450],
-  ['حريرة','طماطم وعدس وحمص ببهار البيت، دافئة وثقيلة على القلب.',400],
-  ['شوربة العدس','عدس مهروس ناعم مع الكمون وقطرة زيت زيتون.',350],
-  ['شوربة الخضار','خضار الموسم على نار هادئة مع الشعيرية.',350]]},
- {id:'main',label:'أطباق رئيسية',color:'#9E2A2B',emoji:'🍛',dishes:[
-  ['كسكس باللحم','سميد يُفتل باليد ويُطهى بالبخار، مع مرق اللحم والقرع والجزر والحمص.',1400],
-  ['شخشوخة','رقائق عجين مقطّعة في مرق حار بالدجاج، من أشهر أطباق بسكرة.',1300],
-  ['رشتة بالدجاج','معجنات رقيقة في مرق أبيض بالدجاج والحمص والقرفة.',1200],
-  ['طاجين الزيتون','دجاج مع الزيتون الأخضر والجزر في مرق خفيف بالزعفران.',1500]]},
- {id:'sweet',label:'حلويات',color:'#6e3b4a',emoji:'🍯',dishes:[
-  ['مقروط بالتمر','سميد محشو بعجينة التمر، مقلي ومغموس في العسل.',400],
-  ['قلب اللوز','سميد ولوز وقطر، تُقطَّع معيّنات وتُقدَّم باردة.',450],
-  ['بقلاوة','طبقات رقيقة من العجين مع المكسّرات والعسل.',500],
-  ['طمينة','سميد محمّص بالسمن والعسل، تُقدَّم دافئة.',350]]},
- {id:'drink',label:'مشروبات',color:'#3f6b55',emoji:'🍵',dishes:[
-  ['شاي بالنعناع','شاي أخضر مع نعناع طازج، يُصبّ من علوّ كما في الدار.',200],
-  ['قهوة بالقرفة','قهوة مطحونة طازجة بلمسة قرفة.',180],
-  ['عصير ليمون ونعناع','ليمون معصور بارد مع ورق النعناع.',300],
-  ['لبن بارد','لبن رائب مخفوق مع قليل من الملح.',150]]}
-];
-const $=(s,r=document)=>r.querySelector(s);
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-const easeOut=t=>1-Math.pow(1-t,3);
-const easeBack=t=>{const c=1.9;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+  <section class="section" id="about">
+    <div class="container about">
+      <div>
+        <h2 class="title">قصتنا</h2>
+        <p>منذ سنوات ونحن نحافظ على وصفات توارثناها جيلًا بعد جيل. نختار مكوّناتنا طازجة من الأسواق المحلية، ونطهو على نار هادئة كما كانت تفعل الجدّات، لتحصلوا على طعم لا يُنسى.</p>
+        <p>في أجواء دافئة بديكور تراثي، نستقبلكم كأنكم في بيتكم.</p>
+        <ul class="features">
+          <li>🌿 مكوّنات طبيعية وطازجة</li>
+          <li>🍲 وصفات عائلية أصيلة</li>
+          <li>🏺 ديكور تراثي دافئ</li>
+        </ul>
+      </div>
+      <div class="about-img img-placeholder" role="img" aria-label="صورة المطعم">ضع صورة المطعم هنا</div>
+    </div>
+  </section>
 
-/* ============ menu ui ============ */
-const tabsEl=$('#tabs'),listA=$('#listA'),listB=$('#listB'),menuSec=$('#menu'),reveal=$('#reveal'),menuStage=$('#menuStage'),body=$('#menuBody');
-let cur=0;
-MENU.forEach((m,i)=>{
-  const b=document.createElement('button');
-  b.className='tab';b.type='button';b.role='tab';b.id='tab-'+m.id;b.textContent=m.label;
-  b.setAttribute('aria-selected',i===0);b.setAttribute('aria-controls','menuBody');b.tabIndex=i===0?0:-1;
-  b.addEventListener('click',()=>setTab(i));
-  b.addEventListener('keydown',e=>{
-    let n=null;
-    if(e.key==='ArrowLeft')n=(cur+1)%MENU.length;      /* RTL: left = next */
-    if(e.key==='ArrowRight')n=(cur-1+MENU.length)%MENU.length;
-    if(n!==null){e.preventDefault();setTab(n);$('#tab-'+MENU[n].id).focus()}
-  });
-  tabsEl.appendChild(b);
-});
-function dishHTML(d){return `<article class="dish"><h3>${d[0]}</h3><span class="lead"></span><span class="price">${d[2]} دج</span><p>${d[1]}</p></article>`}
-function fillLists(i){
-  const m=MENU[i];
-  listA.innerHTML=m.dishes.slice(0,2).map(dishHTML).join('');
-  listB.innerHTML=m.dishes.slice(2).map(dishHTML).join('');
-  body.setAttribute('aria-labelledby','tab-'+m.id);
-}
-fillLists(0);
-menuSec.style.setProperty('--flav',MENU[0].color);
+  <section class="section dark" id="menu-section">
+    <div class="container">
+      <h2 class="title light">قائمة الطعام</h2>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="mains">الأطباق الرئيسية</button>
+        <button class="tab" data-tab="starters">المقبّلات والشوربات</button>
+        <button class="tab" data-tab="desserts">الحلويات والمشروبات</button>
+      </div>
 
-let rvRAF=0,rvPending=null;
-function finishReveal(){
-  cancelAnimationFrame(rvRAF);
-  if(rvPending){menuSec.style.setProperty('--flav',rvPending);rvPending=null}
-  reveal.style.clipPath='circle(0 at 50% 50%)';
-}
-function runReveal(color){
-  finishReveal();
-  if(reduce){menuSec.style.setProperty('--flav',color);return}
-  const sr=menuSec.getBoundingClientRect(),st=menuStage.getBoundingClientRect();
-  const cx=st.left+st.width/2-sr.left,cy=st.top+st.height/2-sr.top;
-  const R=Math.hypot(Math.max(cx,sr.width-cx),Math.max(cy,sr.height-cy))*1.05;
-  reveal.style.background=color;rvPending=color;
-  const t0=performance.now(),D=750;
-  (function step(now){
-    const t=clamp((now-t0)/D);
-    reveal.style.clipPath=`circle(${R*easeOut(t)}px at ${cx}px ${cy}px)`;
-    if(t<1)rvRAF=requestAnimationFrame(step);else finishReveal();
-  })(t0);
-}
-function setTab(i){
-  if(i===cur)return;
-  const prev=cur;cur=i;
-  document.querySelectorAll('.tab').forEach((b,k)=>{b.setAttribute('aria-selected',k===i);b.tabIndex=k===i?0:-1});
-  runReveal(MENU[i].color);
-  menuStage.dataset.emoji=MENU[i].emoji;
-  const out=[listA,listB];
-  if(reduce){fillLists(i)}else{
-    out.forEach(l=>l.animate([{opacity:1,transform:'none'},{opacity:0,transform:'translateY(-10px)'}],{duration:180,easing:'ease-in',fill:'forwards'}));
-    setTimeout(()=>{
-      fillLists(i);
-      out.forEach(l=>{l.getAnimations().forEach(a=>a.cancel());l.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:520,easing:'cubic-bezier(.22,1,.36,1)'})});
-    },190);
-  }
-  if(window.__gl)window.__gl.swap(prev,i);
-}
+      <div class="menu-grid tab-panel active" id="mains">
+        <div class="item"><div><h3>كسكسي بالخضر واللحم</h3><p>سميد مفتول يدويًا، مرق غني وخضر موسمية</p></div><span class="price">1200 دج</span></div>
+        <div class="item"><div><h3>شخشوخة</h3><p>رقائق عجين مع مرق الدجاج والتوابل التقليدية</p></div><span class="price">1000 دج</span></div>
+        <div class="item"><div><h3>رشتة</h3><p>خيوط عجين رقيقة بمرق الدجاج والحمص واللفت</p></div><span class="price">900 دج</span></div>
+        <div class="item"><div><h3>طاجين الزيتون</h3><p>دجاج بالزيتون والمشمش بنكهة الزعفران</p></div><span class="price">1100 دج</span></div>
+        <div class="item"><div><h3>مثوم</h3><p>كفتة محشوّة بالثوم في صلصة حارّة خفيفة</p></div><span class="price">1000 دج</span></div>
+        <div class="item"><div><h3>مشوي مشكّل</h3><p>لحم وكبدة ونقانق على الفحم مع سلطة مشوية</p></div><span class="price">1500 دج</span></div>
+      </div>
 
-/* ============ nav ============ */
-const links=[...document.querySelectorAll('.pill a')],secs=['home','menu','about','book'].map(id=>document.getElementById(id));
-function navUpdate(){
-  let a=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.35)a=i});
-  links.forEach((l,i)=>l.classList.toggle('on',i===a));
-  const ab=document.getElementById('about').getBoundingClientRect();
-  document.querySelector('.nav').classList.toggle('onlight',ab.top<44&&ab.bottom>44);
-}
-addEventListener('scroll',navUpdate,{passive:true});addEventListener('resize',navUpdate);navUpdate();
+      <div class="menu-grid tab-panel" id="starters">
+        <div class="item"><div><h3>شوربة فريك</h3><p>قمح أخضر محمّص مع لحم الضأن والكزبرة</p></div><span class="price">400 دج</span></div>
+        <div class="item"><div><h3>حريرة</h3><p>شوربة الطماطم والعدس والحمص بالأعشاب</p></div><span class="price">350 دج</span></div>
+        <div class="item"><div><h3>بوراك</h3><p>رقائق مقرمشة محشوّة باللحم أو الجبن</p></div><span class="price">300 دج</span></div>
+        <div class="item"><div><h3>سلطة مشوية</h3><p>فلفل وطماطم مشويان بزيت الزيتون</p></div><span class="price">350 دج</span></div>
+      </div>
 
-/* ============ hours + status ============ */
-function algiers(){
-  const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Africa/Algiers',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
-  const dow={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[p.weekday];
-  return {dow,min:(+p.hour%24)*60+(+p.minute),ymd:`${p.year}-${p.month}-${p.day}`};
-}
-const openMin=d=>d===5?14*60:11*60,CLOSE=23*60;
-const hh=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-function paintStatus(){
-  const n=algiers(),el=$('#status'),o=openMin(n.dow);
-  document.querySelectorAll('.hours tr').forEach(r=>r.classList.toggle('today',r.dataset.days.split(',').includes(String(n.dow))));
-  el.classList.remove('open','closed');
-  if(n.min>=o&&n.min<CLOSE){el.classList.add('open');el.lastElementChild.textContent='مفتوح الآن، نغلق عند 23:00'}
-  else{el.classList.add('closed');
-    const nextDow=n.min<o?n.dow:(n.dow+1)%7;
-    el.lastElementChild.textContent='مغلق الآن، نفتح '+(n.min<o?'اليوم':'غداً')+' عند '+hh(openMin(nextDow));}
-}
-paintStatus();setInterval(paintStatus,60000);
+      <div class="menu-grid tab-panel" id="desserts">
+        <div class="item"><div><h3>قلب اللوز</h3><p>حلوى سميد باللوز والعسل</p></div><span class="price">250 دج</span></div>
+        <div class="item"><div><h3>مقروط</h3><p>سميد محشو بالتمر ومقلي بالعسل</p></div><span class="price">200 دج</span></div>
+        <div class="item"><div><h3>شاي بالنعناع</h3><p>شاي أخضر مع نعناع طازج</p></div><span class="price">150 دج</span></div>
+        <div class="item"><div><h3>قهوة تقليدية</h3><p>قهوة محمّصة بماء الزهر</p></div><span class="price">150 دج</span></div>
+      </div>
+      <p class="note">* الأسعار والأطباق أمثلة، عدّلها حسب قائمتك الحقيقية.</p>
+    </div>
+  </section>
 
-/* ============ booking form (page only, nothing is sent) ============ */
-const f=$('#bookForm'),fDate=$('#fDate'),fTime=$('#fTime'),fGuests=$('#fGuests');
-for(let i=1;i<=12;i++)fGuests.add(new Option(i===1?'شخص واحد':i===2?'شخصان':i+' أشخاص',i));
-fGuests.value=2;
-const today=algiers().ymd;
-fDate.min=today;
-{const d=new Date(today+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+60);fDate.max=d.toISOString().slice(0,10)}
-function dowOf(ymd){return new Date(ymd+'T12:00:00Z').getUTCDay()}
-function buildTimes(){
-  const v=fDate.value;fTime.innerHTML='';
-  if(!v){fTime.add(new Option('اختر التاريخ أولاً',''));fTime.disabled=true;return}
-  const n=algiers();let start=openMin(dowOf(v));
-  if(v===today)start=Math.max(start,Math.ceil((n.min+30)/30)*30);
-  fTime.add(new Option('اختر الوقت',''));
-  for(let m=start;m<=CLOSE-60;m+=30)fTime.add(new Option(hh(m),hh(m)));
-  if(fTime.options.length===1){fTime.options[0].text='لا توجد أوقات متاحة في هذا اليوم';fTime.disabled=true}else fTime.disabled=false;
-}
-fDate.addEventListener('change',()=>{buildTimes();setErr('Date','')});
-function setErr(k,msg){const e=$('#e'+k),i=$('#f'+k);if(!e)return;e.textContent=msg;i.setAttribute('aria-invalid',!!msg)}
-function validate(){
-  let first=null;const bad=(k,m)=>{setErr(k,m);first=first||$('#f'+k)};
-  const name=$('#fName').value.trim(),phone=$('#fPhone').value.replace(/[\s.\-]/g,'');
-  setErr('Name','');setErr('Phone','');setErr('Date','');setErr('Time','');
-  if(name.length<3)bad('Name','اكتب اسمك الكامل (3 أحرف على الأقل).');
-  if(!/^0[567]\d{8}$/.test(phone))bad('Phone','اكتب رقماً من 10 أرقام يبدأ بـ 05 أو 06 أو 07.');
-  if(!fDate.value)bad('Date','اختر تاريخ الحجز.');
-  else if(fDate.value<fDate.min||fDate.value>fDate.max)bad('Date','اختر تاريخاً من اليوم حتى 60 يوماً قادمة.');
-  if(!fTime.value)bad('Time',fDate.value?'اختر وقتاً من القائمة.':'اختر التاريخ أولاً.');
-  if(first)first.focus();
-  return !first;
-}
-f.addEventListener('submit',e=>{
-  e.preventDefault();
-  if(!validate())return;
-  const ds=new Date(fDate.value+'T12:00:00Z').toLocaleDateString('ar-DZ-u-nu-latn',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'});
-  const rows=[['الاسم',$('#fName').value.trim()],['التاريخ',ds],['الوقت',fTime.value],['عدد الأشخاص',fGuests.options[fGuests.selectedIndex].text]];
-  const sum=$('#sum');sum.innerHTML='';
-  rows.forEach(([k,v])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=v;sum.append(dt,dd)});
-  f.hidden=true;const d=$('#done');d.hidden=false;d.focus();
-});
-$('#again').addEventListener('click',()=>{f.reset();fGuests.value=2;buildTimes();$('#done').hidden=true;f.hidden=false;$('#fName').focus()});
-['Name','Phone'].forEach(k=>$('#f'+k).addEventListener('input',()=>setErr(k,'')));
-fTime.addEventListener('change',()=>setErr('Time',''));
-buildTimes();
-</script>
+  <section class="section" id="gallery">
+    <div class="container">
+      <h2 class="title">معرض الصور</h2>
+      <div class="gallery">
+        <div class="img-placeholder">صورة 1</div>
+        <div class="img-placeholder">صورة 2</div>
+        <div class="img-placeholder">صورة 3</div>
+        <div class="img-placeholder">صورة 4</div>
+        <div class="img-placeholder">صورة 5</div>
+        <div class="img-placeholder">صورة 6</div>
+      </div>
+    </div>
+  </section>
 
-<script type="module">
-/* ============ 3D: one canvas, clipped to each section ============ */
-const root=document.documentElement;
-const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-const easeBack=t=>{const c=1.9;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const hero=document.getElementById('home');
-function startHero(){hero.classList.add('go')}
-try{
-  const THREE=await import('three');
-  const {RoomEnvironment}=await import('three/addons/environments/RoomEnvironment.js');
-  const {mergeVertices}=await import('three/addons/utils/BufferGeometryUtils.js');
-  const canvas=document.getElementById('gl');
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-  renderer.autoClear=false;
-  renderer.outputColorSpace=THREE.SRGBColorSpace;
-  const scene=new THREE.Scene();
-  scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),0.04).texture;
-  scene.add(new THREE.AmbientLight(0xffffff,.7));
-  const key=new THREE.DirectionalLight(0xfff1dc,1.6);key.position.set(-.8,1.6,1.6);scene.add(key);
-  const camera=new THREE.PerspectiveCamera(30,1,10,9000);
-  let VW=innerWidth,VH=innerHeight;
-  function resize(){
-    VW=innerWidth;VH=innerHeight;
-    renderer.setPixelRatio(Math.min(devicePixelRatio,VW<820?1.75:2));
-    renderer.setSize(VW,VH);
-    const D=clamp(1500*Math.min(VW/1440,VH/900),1000,2200);
-    camera.position.set(0,0,D);camera.fov=2*Math.atan((VH/2)/D)*180/Math.PI;camera.aspect=VW/VH;camera.near=10;camera.far=D*4;camera.updateProjectionMatrix();
-  }
-  resize();addEventListener('resize',resize);
+  <section class="section cream" id="reserve">
+    <div class="container narrow">
+      <h2 class="title">احجز طاولتك</h2>
+      <form id="reserveForm" class="form">
+        <input type="text" name="name" placeholder="الاسم الكامل" required>
+        <input type="tel" name="phone" placeholder="رقم الهاتف" required>
+        <div class="row">
+          <input type="date" name="date" required>
+          <input type="time" name="time" required>
+        </div>
+        <input type="number" name="guests" min="1" max="30" placeholder="عدد الأشخاص" required>
+        <textarea name="notes" rows="3" placeholder="ملاحظات (اختياري)"></textarea>
+        <button type="submit" class="btn">أرسل الحجز عبر واتساب</button>
+      </form>
+    </div>
+  </section>
 
-  /* ---- helpers ---- */
-  const V2=(a)=>a.map(([x,y])=>new THREE.Vector2(x,y));
-  const mat=(color,o={})=>new THREE.MeshPhysicalMaterial({color,roughness:.5,metalness:0,clearcoat:.3,clearcoatRoughness:.45,side:THREE.DoubleSide,...o});
-  const lathe=(pts,m,seg=72)=>new THREE.Mesh(new THREE.LatheGeometry(V2(pts),seg),m);
-  const sph=(r,m,sx=1,sy=1,sz=1)=>{const s=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),m);s.scale.set(sx,sy,sz);return s};
-  const ring=(R,tube,m,y)=>{const t=new THREE.Mesh(new THREE.TorusGeometry(R,tube,12,72),m);t.rotation.x=Math.PI/2;t.position.y=y;return t};
-  const blob=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)})();
-  const shadowTex=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(25,10,5,.55)');g.addColorStop(1,'rgba(25,10,5,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)})();
-  function steam(n,x,y,z,w){
-    const g=new THREE.Group();const items=[];
-    for(let i=0;i<n;i++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:blob,color:0xffffff,transparent:true,opacity:0,depthWrite:false}));g.add(s);items.push({s,ph:i/n,dx:(i%2?1:-1)*(.04+.03*(i%3))})}
-    g.userData.update=(t)=>{items.forEach(it=>{const k=((t/3800)+it.ph)%1;it.s.position.set(x+it.dx*k*3+Math.sin(k*6+it.ph*9)*.05,y+k*w,z);const sc=.22+k*.5;it.s.scale.set(sc,sc,1);it.s.material.opacity=Math.sin(Math.PI*k)*.3})};
-    return g;
-  }
-  /* wrap a model: centre it, scale so its largest side is 1, tilt toward camera, add contact shadow */
-  function wrap(model,{extra=null,tilt=.5}={}){
-    const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3());
-    const k=1/Math.max(size.x,size.y,size.z);
-    const norm=new THREE.Group();model.position.sub(c);norm.add(model);norm.scale.setScalar(k);
-    const spin=new THREE.Group();spin.add(norm);
-    const outer=new THREE.Group();outer.add(spin);outer.rotation.x=tilt;
-    const minY=-size.y*k/2;
-    const sh=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.5),new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,opacity:.7,depthWrite:false}));
-    sh.rotation.x=-Math.PI/2;sh.position.y=minY-.015;sh.renderOrder=-1;outer.add(sh);
-    let fx=null;if(extra){const e=extra(minY,size.y*k);spin.add(e);fx=e}
-    outer.userData={spin,fx,tilt};outer.visible=false;scene.add(outer);return outer;
-  }
+  <section class="section" id="contact">
+    <div class="container contact">
+      <div>
+        <h2 class="title">تواصل معنا</h2>
+        <p>📍 العنوان: شارع الاستقلال، المدينة، الجزائر</p>
+        <p>📞 الهاتف: <a href="tel:+213000000000" dir="ltr">+213 000 000 000</a></p>
+        <p>✉️ البريد: <a href="mailto:contact@example.com">contact@example.com</a></p>
+        <h3>أوقات العمل</h3>
+        <p>من السبت إلى الخميس: 11:00 صباحًا – 11:00 مساءً</p>
+        <p>الجمعة: 1:00 ظهرًا – 11:00 مساءً</p>
+      </div>
+      <div class="map img-placeholder">ضع خريطة Google Maps هنا (iframe)</div>
+    </div>
+  </section>
 
-  /* ---- models ---- */
-  function soup(){
-    const g=new THREE.Group();
-    const glaze=mat('#f1e6cf',{roughness:.3,clearcoat:.9}),blue=mat('#2c5f86',{roughness:.4});
-    g.add(lathe([[0,0],[.4,0],[.5,.04],[.78,.3],[.95,.58],[1,.66],[.95,.68],[.9,.62],[.74,.36],[.45,.16],[0,.12]],glaze));
-    g.add(ring(.93,.025,blue,.5));g.add(ring(.62,.02,blue,.22));
-    const liquid=new THREE.Mesh(new THREE.CircleGeometry(.79,64),mat('#d9722a',{roughness:.25,clearcoat:.6}));liquid.rotation.x=-Math.PI/2;liquid.position.y=.45;g.add(liquid);
-    const chick=mat('#e4bd72',{roughness:.7}),herb=mat('#4c8a3a',{roughness:.8});
-    for(let i=0;i<14;i++){const a=i*2.4,r=.1+((i*37)%10)/10*.52;const s=sph(.06,i%3?chick:herb,1,.8,1);s.position.set(Math.cos(a)*r,.47,Math.sin(a)*r);g.add(s)}
-    const lemon=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.03,32),mat('#f3d94a',{roughness:.4}));lemon.position.set(.35,.47,-.3);g.add(lemon);
-    return g;
-  }
-  function couscous(){
-    const g=new THREE.Group();
-    const plate=mat('#efe2c6',{roughness:.3,clearcoat:.8}),teal=mat('#1f6f78',{roughness:.4});
-    g.add(lathe([[0,0],[1.2,0],[1.42,.08],[1.52,.17],[1.46,.19],[1.3,.13],[0,.1]],plate));
-    g.add(ring(1.46,.03,teal,.18));
-    let geo=new THREE.SphereGeometry(.92,72,36,0,Math.PI*2,0,Math.PI/2);
-    geo.deleteAttribute('uv');geo.deleteAttribute('normal');geo=mergeVertices(geo,1e-4); /* weld the seam so shading is smooth */
-    const p=geo.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);const h=Math.abs(Math.sin(Math.round(x*40)*12.9898+Math.round(y*40)*78.233+Math.round(z*40)*37.719)*43758.5453)%1;const j=1+h*.035;p.setXYZ(i,x*j,y*j,z*j)}geo.computeVertexNormals();
-    const dome=new THREE.Mesh(geo,mat('#efcb7c',{roughness:1,clearcoat:0}));dome.scale.y=.82;dome.position.y=.1;g.add(dome);
-    const Y=new THREE.Vector3(0,1,0);
-    const place=(mesh,a,rr)=>{const y=.1+.82*Math.sqrt(Math.max(.01,.92*.92-rr*rr));mesh.position.set(Math.cos(a)*rr,y+.02,Math.sin(a)*rr);const slope=.82*rr/Math.sqrt(Math.max(.01,.92*.92-rr*rr));const dir=new THREE.Vector3(-Math.cos(a),slope,-Math.sin(a)).normalize();mesh.quaternion.setFromUnitVectors(Y,dir);g.add(mesh)};
-    const carrotM=mat('#e5791f',{roughness:.5}),zucM=mat('#b7c46f',{roughness:.5});
-    for(let i=0;i<5;i++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.1,.06,.62,16),carrotM);place(c,i/5*Math.PI*2+.2,.72)}
-    for(let i=0;i<5;i++){const z=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.5,16),zucM);place(z,(i+.5)/5*Math.PI*2+.2,.7)}
-    const chick=mat('#e0b362',{roughness:.7});
-    for(let i=0;i<16;i++){const a=i*2.39,rr=.12+((i*53)%10)/10*.45;const s=sph(.06,chick);place(s,a,rr);g.add(s)}
-    const lamb=mat('#6e381d',{roughness:.6});
-    [[0,0],[.22,1.4],[.2,3.6],[.24,5.2]].forEach(([rr,a])=>{const s=sph(.16,lamb,1,.8,1);place(s,a,rr)});
-    return g;
-  }
-  function makrout(){
-    const g=new THREE.Group();
-    const plate=mat('#efe2c6',{roughness:.3,clearcoat:.8}),gold=mat('#d9a441',{roughness:.35,metalness:.5});
-    g.add(lathe([[0,0],[1.1,0],[1.35,.07],[1.45,.16],[1.4,.18],[1.25,.12],[0,.1]],plate));
-    g.add(ring(1.41,.03,gold,.17));
-    const sh=new THREE.Shape();sh.moveTo(0,-.46);sh.lineTo(.3,0);sh.lineTo(0,.46);sh.lineTo(-.3,0);sh.closePath();
-    const geo=new THREE.ExtrudeGeometry(sh,{depth:.2,bevelEnabled:true,bevelSize:.035,bevelThickness:.04,bevelSegments:4,curveSegments:4});
-    geo.rotateX(-Math.PI/2);geo.center();
-    const piece=mat('#cf8c2c',{roughness:.3,clearcoat:1,clearcoatRoughness:.15}),dark=mat('#8a5518',{roughness:.6}),sesame=mat('#fbf1d8',{roughness:.6});
-    const add=(x,y,z,ry,rz=0)=>{const m=new THREE.Mesh(geo,piece);m.position.set(x,y,z);m.rotation.set(0,ry,rz);g.add(m);
-      const line=new THREE.Mesh(new THREE.BoxGeometry(.025,.012,.6),dark);line.position.set(0,.145,0);line.rotation.set(0,0,0);m.add(line);
-      for(let k=0;k<5;k++){const s=sph(.018,sesame,1,.5,1);s.position.set((k-2)*.05,.15,((k*37)%7-3)*.07);m.add(s)}};
-    for(let i=0;i<6;i++){const a=i/6*Math.PI*2;add(Math.cos(a)*.7,.28,Math.sin(a)*.7,-a+Math.PI/2)}
-    for(let i=0;i<3;i++){const a=i/3*Math.PI*2+.5;add(Math.cos(a)*.34,.52,Math.sin(a)*.34,-a+Math.PI/2+.4)}
-    add(0,.76,0,.3);
-    return g;
-  }
-  function tea(){
-    const g=new THREE.Group();
-    const tray=mat('#b9873a',{metalness:.85,roughness:.3,envMapIntensity:1.3}),silver=mat('#d6d3cb',{metalness:.95,roughness:.22,envMapIntensity:1.4}),gold=mat('#d9a441',{metalness:.9,roughness:.25,envMapIntensity:1.3});
-    g.add(lathe([[0,0],[1.65,0],[1.78,.05],[1.78,.1],[1.65,.07],[0,.06]],tray));
-    const pot=new THREE.Group();pot.position.set(-.35,.05,-.1);
-    pot.add(lathe([[0,0],[.5,0],[.62,.04],[.74,.22],[.72,.42],[.55,.62],[.42,.74],[.38,.8],[.33,.9],[.34,.96],[.4,1.0]],silver));
-    pot.add(ring(.735,.03,gold,.3));pot.add(ring(.43,.025,gold,.7));
-    const lid=sph(.38,silver,1,.55,1);lid.position.y=1.0;pot.add(lid);const kn=sph(.075,gold);kn.position.y=1.24;pot.add(kn);
-    const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(.55,.22,0),new THREE.Vector3(.92,.3,0),new THREE.Vector3(1.12,.62,0),new THREE.Vector3(1.3,1.02,0)]);
-    pot.add(new THREE.Mesh(new THREE.TubeGeometry(curve,32,.065,12),silver));
-    const tip=new THREE.Mesh(new THREE.CylinderGeometry(.1,.065,.1,16),silver);tip.position.set(1.31,1.05,0);tip.rotation.z=-.35;pot.add(tip);
-    const h=new THREE.Mesh(new THREE.TorusGeometry(.4,.04,12,32,Math.PI),gold);h.rotation.z=Math.PI/2;h.position.set(-.68,.5,0);pot.add(h);
-    g.add(pot);
-    const glass=new THREE.Group();glass.position.set(.95,.07,.62);glass.scale.setScalar(1.35);
-    glass.add(lathe([[0,0],[.17,0],[.2,.02],[.26,.52],[.285,.54]],mat('#ffffff',{transparent:true,opacity:.28,roughness:.05,clearcoat:1,clearcoatRoughness:.05})));
-    glass.add(lathe([[0,.03],[.165,.03],[.245,.42],[0,.42]],mat('#c8a548',{roughness:.2,clearcoat:.5,emissive:'#5a4310',emissiveIntensity:.35})));
-    const leaf=mat('#3e8a4a',{roughness:.6});
-    [[.04,.03,.7],[-.06,-.02,-.5],[.0,-.07,.1]].forEach(([x,z,r],i)=>{const l=sph(.1,leaf,1,.14,.55);l.position.set(x,.44+i*.012,z);l.rotation.y=r;glass.add(l)});
-    g.add(glass);
-    return g;
-  }
+  <footer class="footer">
+    <p>© <span id="year"></span> مطعم الأصالة. جميع الحقوق محفوظة.</p>
+  </footer>
 
-  /* ---- build ---- */
-  const menuObjs=[
-    wrap(soup(),{extra:()=>steam(5,0,.0,0,.5),tilt:.62}),
-    wrap(couscous(),{tilt:.6}),
-    wrap(makrout(),{tilt:.62}),
-    wrap(tea(),{tilt:.5})
-  ];
-  /* steam for soup sits just above the bowl: lift it after wrapping */
-  menuObjs[0].userData.fx.position.y=0.06;
-
-  /* ---- state ---- */
-  const menuStage=document.getElementById('menuStage'),menuSec=document.getElementById('menu');
-  const mk=(stage)=>({stage,yaw:0,vel:0,dragging:false,lastX:0});
-  const M=mk(menuStage);
-  [M].forEach(it=>{
-    it.stage.addEventListener('pointerdown',e=>{if(e.button)return;it.dragging=true;it.lastX=e.clientX;it.sx=e.clientX;it.sy=e.clientY;it.moved=false;it.stage.setPointerCapture(e.pointerId)});
-    it.stage.addEventListener('pointermove',e=>{if(!it.dragging)return;const dx=e.clientX-it.lastX;it.lastX=e.clientX;if(Math.abs(e.clientX-it.sx)>4)it.moved=true;if(it.moved){it.stage.classList.add('drag');it.yaw+=dx*.012;it.vel=dx*.012}});
-    const end=()=>{it.dragging=false;it.stage.classList.remove('drag')};
-    it.stage.addEventListener('pointerup',end);it.stage.addEventListener('pointercancel',end);
-  });
-  let menuIdx=0,prevIdx=null,swapT0=-1e9;
-  window.__gl={swap(p,n){prevIdx=p;menuIdx=n;swapT0=performance.now()}};
-  let heroGo=false,heroT0=0;
-  const ready=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();
-  const startAt=performance.now();
-
-  function place(obj,stage,k,yaw,t,bob=0){
-    const r=stage.getBoundingClientRect();
-    const size=Math.min(r.width,r.height);
-    obj.position.set(r.left+r.width/2-VW/2,VH/2-(r.top+r.height/2)+Math.sin(t/2600*Math.PI*2)*bob*size,0);
-    obj.scale.setScalar(Math.max(.0001,size*k));
-    obj.userData.spin.rotation.y=yaw;
-    if(obj.userData.fx&&obj.userData.fx.userData.update)obj.userData.fx.userData.update(t);
-  }
-  function draw(obj,sec){
-    const r=sec.getBoundingClientRect();
-    const top=Math.max(r.top,0),bot=Math.min(r.bottom,VH);
-    if(bot<=top)return;
-    scene.children.forEach(c=>{if(c.userData&&c.userData.spin)c.visible=false});
-    obj.visible=true;
-    renderer.setScissor(0,VH-bot,VW,bot-top);
-    renderer.render(scene,camera);
-    obj.visible=false;
-  }
-  let last=performance.now(),started=false;
-  function frame(now){
-    requestAnimationFrame(frame);
-    const dt=Math.min(50,now-last);last=now;
-    if(!started&&(now-startAt>250)){started=true;ready.then(()=>{startHero();heroGo=true;heroT0=performance.now()})}
-    for(const it of [M]){if(!it.dragging){it.vel*=.94;it.yaw+=it.vel;if(!reduce)it.yaw+=dt*.00055}}
-    renderer.setScissorTest(false);renderer.clear();renderer.setScissorTest(true);
-    /* menu */
-    const t=clamp((now-swapT0)/750);
-    const swapping=!reduce&&t<1&&prevIdx!==null;
-    if(swapping){
-      const ko=1-clamp(t/.38);
-      if(ko>.01){place(menuObjs[prevIdx],menuStage,.98*ko,M.yaw+(1-ko)*5,now,.012);draw(menuObjs[prevIdx],menuSec)}
-      const kn=easeBack(clamp((t-.22)/.78));
-      place(menuObjs[menuIdx],menuStage,.98*kn,M.yaw-(1-kn)*4,now,.012);draw(menuObjs[menuIdx],menuSec);
-    }else{
-      place(menuObjs[menuIdx],menuStage,.98,M.yaw,now,.012);draw(menuObjs[menuIdx],menuSec);
-    }
-  }
-  requestAnimationFrame(frame);
-  document.documentElement.classList.add('gl-ok');
-}catch(err){
-  console.warn('3D unavailable, using fallback',err);
-  root.classList.add('nogl');
-  startHero();
-}
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
